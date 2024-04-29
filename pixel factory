@@ -1,0 +1,38 @@
+// worldclock.js
+function updateClocks() {
+  const cities = [
+    { id: "los-angeles", offset: -7 },
+    { id: "san-francisco", offset: -7 },
+    { id: "new-york", offset: -4 },
+    { id: "melbourne", offset: 10 }
+  ];
+
+  cities.forEach(city => {
+    const now = new Date();
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    const localTime = new Date(utc + (3600000 * city.offset));
+    const hours = localTime.getHours();
+    let greeting;
+    if (hours >= 5 && hours < 8) {
+      greeting = "It’s Early";
+    } else if (hours >= 8 && hours < 18) {
+      greeting = "Good Day";
+    } else if (hours >= 18 && hours < 22) {
+      greeting = "Good Evening";
+    } else {
+      greeting = "Goodnight";
+    }
+
+    const formattedTime = `${hours.toString().padStart(2, '0')}:${localTime.getMinutes().toString().padStart(2, '0')}`;
+
+    document.getElementById(city.id).querySelector('.greeting').textContent = greeting;
+    document.getElementById(city.id).querySelector('.time').textContent = formattedTime;
+    
+    const circleElement = document.getElementById(city.id).querySelector('.circle');
+    circleElement.classList.remove('business-hours', 'non-business-hours');
+    circleElement.classList.add(hours >= 9 && hours < 17 ? 'business-hours' : 'non-business-hours');
+  });
+}
+
+setInterval(updateClocks, 1000); // Update clocks every second
+document.addEventListener("DOMContentLoaded", updateClocks); // Initialize clocks on page load
